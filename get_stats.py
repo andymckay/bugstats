@@ -6,7 +6,7 @@ import requests
 try:
     import settings
 except ImportError:
-    pass
+    settings = False
 
 args = {
     'email1': 'wraithan@mozilla.com',

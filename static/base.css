@@ -1,3 +1,30 @@
 table td {
     text-align: center!important;
 }
+
+#graph {
+    font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.x.axis path {
+    display: none;
+}
+
+.avg_line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+
+.data_line {
+    fill: none;
+    stroke: green;
+    stroke-width: 1.5px;
+}

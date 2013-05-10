@@ -1,15 +1,21 @@
 $(function() {
     $.getJSON('http://localhost:5000/data.json', function(data){
-        var tbody = $('#counts tbody')
-        data.dates.forEach(function(element, index){
-            var row = $('<tr>')
-            row.append($('<td>', {
-                'text': element,
-            }))
-            row.append($('<td>', {
-                'text': data.count[index],
-            }))
-            tbody.prepend(row)
-        })
+        console.log(JSON.stringify(data.data))
+        dataDisplay(data.data)
+        graph(data.data)
     })
 })
+
+var dataDisplay = function(data) {
+    var tbody = $('#counts tbody')
+    data.forEach(function(element, index){
+        var row = $('<tr>')
+        row.append($('<td>', {
+            'text': element.date,
+        }))
+        row.append($('<td>', {
+            'text': element.count,
+        }))
+        tbody.prepend(row)
+    })
+}

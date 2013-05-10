@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 
 import requests
@@ -17,16 +18,19 @@ args = {
 
 if settings:
     args.update(settings.additional_filter)
+elif os.getenv('BUGZILLA_FILTER'):
+    var = dict(a.split('=') for a in str.split(';'))
+    args.update(dict(pair.split('=') for pair in var.split(';')))
 
 bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest/count'
 
 
 def get_stats():
+    source = 'api'
     res = requests.get(url=bugzilla_url, params=args).json()
     labels = [datetime.strptime(l, '%Y-%m-%d').date()
               for l in res['x_labels'][1:]]
-    data = res['data'][1:]
-    closed_bugs = dict(zip(labels, data))
+    closed_bugs = dict(zip(labels, res['data'][1:]))
     first_label = labels[-1]
     i = labels[0]
     week = timedelta(days=7)
@@ -35,13 +39,15 @@ def get_stats():
             closed_bugs[i] = 0
         i += week
 
-    keys = []
-    values = []
-    for key in sorted(closed_bugs.iterkeys()):
-        keys.append(key.isoformat())
-        values.append(closed_bugs[key])
+    data = []
+    to_avg = []
+    for date, count in sorted(closed_bugs.iteritems()):
+        to_avg.append(count)
+        data.append({'date': date.isoformat(),
+                     'count': count,
+                     'avg': sum(to_avg)/float(len(to_avg))})
 
-    return {'dates': keys, 'count': values}
+    return {'data': data, 'source': source}
 
 
 if __name__ == '__main__':

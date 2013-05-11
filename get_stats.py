@@ -27,7 +27,9 @@ bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest/count'
 
 def get_stats():
     source = 'api'
+    print args
     res = requests.get(url=bugzilla_url, params=args).json()
+    print res
     labels = [datetime.strptime(l, '%Y-%m-%d').date()
               for l in res['x_labels'][1:]]
     closed_bugs = dict(zip(labels, res['data'][1:]))

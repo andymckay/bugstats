@@ -18,8 +18,8 @@ args = {
 
 if settings:
     args.update(settings.additional_filter)
-elif os.getenv('BUGZILLA_FILTER'):
-    var = dict(a.split('=') for a in str.split(';'))
+elif os.getenv('BUGZILLA_FILTER', False):
+    var = os.getenv('BUGZILLA_FILTER')
     args.update(dict(pair.split('=') for pair in var.split(';')))
 
 bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest/count'

@@ -42,6 +42,8 @@ def get_stats():
     data = []
     to_avg = []
     for date, count in sorted(closed_bugs.iteritems()):
+        if len(to_avg) > 5:
+            to_avg.pop(0)
         to_avg.append(count)
         data.append({'date': date.isoformat(),
                      'count': count,

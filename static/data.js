@@ -1,5 +1,5 @@
 $(function() {
-    $.getJSON('http://localhost:5000/data.json', function(data){
+    $.getJSON('/data.json', function(data){
         console.log(JSON.stringify(data.data))
         dataDisplay(data.data)
         graph(data.data)

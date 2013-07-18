@@ -34,3 +34,9 @@ table td {
     stroke: black;
     stroke-width: 1.5px;
 }
+
+.ideal_line {
+    fill: none;
+    stroke: red;
+    stroke-width: 1.5px;
+}

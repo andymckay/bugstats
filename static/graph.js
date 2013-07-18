@@ -1,7 +1,7 @@
 function graph(data) {
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
         width = 780 - margin.left - margin.right,
-        height = 200 - margin.top - margin.bottom;
+        height = 400 - margin.top - margin.bottom;
 
     var parseDate = d3.time.format("%Y-%m-%d").parse;
 
@@ -18,7 +18,7 @@ function graph(data) {
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("left")
-        .ticks(5);
+        .ticks(10);
 
     var avg_line = d3.svg.line()
         .interpolate('basis')
@@ -33,6 +33,10 @@ function graph(data) {
         .x(function(d) { return x(d.date); })
         .y(function(d) { return y(4); });
 
+    var ideal_line = d3.svg.line()
+        .x(function(d) { return x(d.date); })
+        .y(function(d) { return y(d.ideal); });
+
     var svg = d3.select("#graph").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -44,7 +48,7 @@ function graph(data) {
     });
 
     x.domain(d3.extent(data, function(d) { return d.date; }));
-    y.domain(d3.extent(data, function(d) { return d.count; }));
+    y.domain([0, 8]);
 
     svg.append("g")
         .attr("class", "x axis")
@@ -56,7 +60,7 @@ function graph(data) {
         .call(yAxis)
         .append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 6)
+        .attr("y", 5)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Closed");
@@ -75,4 +79,9 @@ function graph(data) {
         .datum(data)
         .attr("class", "data_line")
         .attr("d", data_line);
+
+    svg.append("path")
+        .datum(data)
+        .attr("class", "ideal_line")
+        .attr("d", ideal_line)
 }

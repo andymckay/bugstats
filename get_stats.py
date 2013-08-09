@@ -27,7 +27,10 @@ bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest/count'
 
 def get_stats():
     source = 'api'
-    res = requests.get(url=bugzilla_url, params=args, timeout=1).json()
+    try:
+        res = requests.get(url=bugzilla_url, params=args, timeout=1).json()
+    except request.Timeout:
+        return {'error': 'Bugzilla timed out'}
     start = 1
     labels = [datetime.strptime(l, '%Y-%m-%d').date()
               for l in res['x_labels'][start:]]

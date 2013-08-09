@@ -29,7 +29,7 @@ def get_stats():
     source = 'api'
     try:
         res = requests.get(url=bugzilla_url, params=args, timeout=1).json()
-    except request.Timeout:
+    except requests.Timeout:
         return {'error': 'Bugzilla timed out'}
     start = 1
     labels = [datetime.strptime(l, '%Y-%m-%d').date()
@@ -68,4 +68,3 @@ def get_stats():
 
 if __name__ == '__main__':
     print get_stats()
-1

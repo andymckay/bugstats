@@ -1,7 +1,6 @@
 import os
 from datetime import date, datetime, timedelta
 from pprint import pprint
-from operator import itemgetter
 
 import requests
 
@@ -10,6 +9,8 @@ try:
 except ImportError:
     settings = False
 
+
+bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest/count'
 args = {
     'email1': 'wraithan@mozilla.com',
     'email1_assigned_to': 1,
@@ -18,54 +19,12 @@ args = {
     'resolution': 'FIXED',
 }
 
-open_bugs = {
-    'bug_status': ('UNCONFIRMED', 'NEW', 'ASSINGED', 'REOPENED'),
-    'email1': 'wraithan@mozilla.com',
-    'email1_assigned_to': 1,
-    'target_milestone': '---',
-    'target_milestone_type': 'not_equals'
-}
 
 if settings:
     args.update(settings.additional_filter)
 elif os.getenv('BUGZILLA_FILTER', False):
-    var = os.getenv('BUGZILLA_FILTER')
-    auth = dict(pair.split('=') for pair in var.split(';'))
-    args.update(auth)
-
-bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest/count'
-bug_url = 'https://bugzilla.mozilla.org/show_bug.cgi?id={id}'
-
-
-def multikeysort(items, columns):
-    comparers = [((itemgetter(col[1:].strip()), -1)
-                 if col.startswith('-')
-                 else (itemgetter(col.strip()), 1))
-                 for col in columns]
-
-    def comparer(left, right):
-        for fn, mult in comparers:
-            result = cmp(fn(left), fn(right))
-            if result:
-                return mult * result
-        else:
-            return 0
-    return sorted(items, cmp=comparer)
-
-
-def get_bugs():
-    res = requests.get(
-        url='https://api-dev.bugzilla.mozilla.org/latest/bug',
-        params=open_bugs
-    )
-    keys = ('target_milestone', 'summary', 'id', 'priority')
-    bugs = [dict([(key, bug[key]) for key in keys])
-            for bug in res.json()['bugs']]
-    sorted_bugs = multikeysort(bugs, ('target_milestone', 'priority'))
-    return {
-        'bugs': sorted_bugs,
-        'source': 'api'
-    }
+    args.update(dict(pair.split('=')
+                for pair in os.getenv('BUGZILLA_FILTER').split(';')))
 
 
 def get_stats():
@@ -114,5 +73,4 @@ def get_stats():
 
 
 if __name__ == '__main__':
-    pprint(get_bugs())
     pprint(get_stats())

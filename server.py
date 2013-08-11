@@ -1,9 +1,11 @@
+#!/usr/bin/env python
 import json
 import logging
 
 from flask import Flask
 
-from get_stats import get_bugs, get_stats
+from lib.get_stats import get_stats
+from lib.get_bugs import get_bugs
 
 
 app = Flask(__name__)

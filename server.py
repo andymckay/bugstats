@@ -3,7 +3,7 @@ import logging
 
 from flask import Flask
 
-from get_stats import get_stats
+from get_stats import get_bugs, get_stats
 
 
 app = Flask(__name__)
@@ -22,9 +22,14 @@ def index():
         return f.read()
 
 
-@app.route('/data.json')
-def data():
+@app.route('/stats.json')
+def stats():
     return json.dumps(get_stats(), sort_keys=False)
+
+
+@app.route('/bugs.json')
+def bugs():
+    return json.dumps(get_bugs(), sort_keys=False)
 
 
 if __name__ == '__main__':

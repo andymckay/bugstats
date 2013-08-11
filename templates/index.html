@@ -5,26 +5,22 @@
     <link rel="shortcut icon" href="static/favicon.ico">
     <link href="static/bootstrap-simplex.min.css" rel="stylesheet">
     <link href="static/base.css" rel="stylesheet">
-    <title>Wraithan's Bug Closing</title>
+    <title>Wraithan's Bugs</title>
   </head>
   <body>
     <div class="container">
       <div class="row">
-        <div class="span2">
-          <table id="counts" class="table table-condensed">
-            <thead>
-              <tr>
-                <td>Milestone</td>
-                <td>Bugs</td>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
-        <div class="span10">
+        <div class="span12">
+          <h2>Closed Bug Stats</h2>
           <div id="graph">
           </div>
+        </div>
+        <div class="span12">
+          <h2>Upcoming bugs
+            <small>(does not include security/confidental bugs)</small>
+          </h2>
+          <ul id="bugs" class="unstyled">
+          </ul>
         </div>
       </div>
     </div>

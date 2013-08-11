@@ -1,9 +1,5 @@
-table td {
-    text-align: center!important;
-}
-
 #graph {
-    font: 10px sans-serif;
+    font: 12px sans-serif;
 }
 
 .axis path,
@@ -39,4 +35,8 @@ table td {
     fill: none;
     stroke: red;
     stroke-width: 1.5px;
+}
+
+.target_milestone {
+    font-weight: bold;
 }

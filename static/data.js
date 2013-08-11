@@ -1,29 +1,45 @@
 $(function() {
-    $.getJSON('/data.json', function(data){
-        console.log(JSON.stringify(data.data))
-        if (data.data.error) {
-            displayError(data.data.error)
-        } else {
-            dataDisplay(data.data)
-            graph(data.data)
-        }
-    })
+  $.getJSON('/stats.json', function(data) {
+    if (data.error) {
+      $('#graph').append($('<h3>').text(data.error))
+    } else {
+      graph(data.stats)
+    }
+  })
+  $.getJSON('/bugs.json', function(data) {
+    if (data.error) {
+      $('#bugs').append($('<h3>').text(data.error))
+    } else {
+      var list = $('#bugs')
+      data.bugs.forEach(function(element) {
+        var item = $('<li>')
+        $('<span>', {
+          class: 'target_milestone'
+        , text: element.target_milestone
+        }).appendTo(item)
+        item.append(document.createTextNode(': '))
+
+        $('<span>', {
+          class: 'priority'
+        , text: element.priority
+        }).appendTo(item)
+        item.append(document.createTextNode(' '))
+
+        $('<span>', {
+          class: 'summary'
+        , text: element.summary
+        }).appendTo(item)
+        item.append(document.createTextNode(' ('))
+
+        $('<a>', {
+          class: 'bug_link'
+        , href: 'https://bugzilla.mozilla.org/show_bug.cgi?id=' + element.id
+        , text: 'bug ' + element.id
+        }).appendTo(item)
+        item.append(document.createTextNode(')'))
+
+        item.appendTo(list)
+      })
+    }
+  })
 })
-
-var dataDisplay = function(data) {
-    var tbody = $('#counts tbody')
-    data.forEach(function(element, index){
-        var row = $('<tr>')
-        row.append($('<td>', {
-            'text': element.date
-        }))
-        row.append($('<td>', {
-            'text': element.count
-        }))
-        tbody.prepend(row)
-    })
-}
-
-var displayError = function(error) {
-    $('#graph').append($('h3').text(error))
-}

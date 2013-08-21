@@ -1,14 +1,14 @@
 $(function() {
   $.getJSON('/stats.json', function(data) {
     if (data.error) {
-      $('#graph').append($('<h3>').text(data.error))
+      $('#graph').append($('<h3>', {text: data.error}))
     } else {
       graph(data.stats)
     }
   })
   $.getJSON('/bugs.json', function(data) {
     if (data.error) {
-      $('#bugs').append($('<h3>').text(data.error))
+      $('#bugs').append($('<h3>', {text: data.error}))
     } else {
       var list = $('#bugs')
       data.bugs.forEach(function(element) {
@@ -39,6 +39,30 @@ $(function() {
         item.append(document.createTextNode(')'))
 
         item.appendTo(list)
+      })
+    }
+  })
+  $.getJSON('/prs.json', function(data) {
+    if (data.error) {
+      $('#prs').append($('<h3>', {text: data.error}))
+    } else {
+      var prs_container = $('#prs')
+      data.forEach(function(repo) {
+        var container = $('<div>', {class: 'span4'})
+        container.append($('<h4>', {text: repo.name}))
+        var list = $('<ul>', {class: 'unstyled'})
+        container.append(list)
+        repo.prs.forEach(function(pr) {
+          var item = $('<li>')
+          var link = $('<a>', {
+            text: pr.number,
+            href: pr.url
+          })
+          item.append(link)
+          item.append(document.createTextNode(': ' + pr.title))
+          list.append(item)
+        })
+        prs_container.append(container)
       })
     }
   })

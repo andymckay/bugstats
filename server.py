@@ -2,10 +2,11 @@
 import json
 import logging
 
-from flask import Flask
+from flask import Flask, Response
 
 from lib.get_stats import get_stats
 from lib.get_bugs import get_bugs
+from lib.get_prs import get_prs
 
 
 app = Flask(__name__)
@@ -26,13 +27,21 @@ def index():
 
 @app.route('/stats.json')
 def stats():
-    return json.dumps(get_stats(), sort_keys=False)
+    return Response(response=json.dumps(get_stats(), sort_keys=False),
+                    status=200, mimetype="application/json")
 
 
 @app.route('/bugs.json')
 def bugs():
-    return json.dumps(get_bugs(), sort_keys=False)
+    return Response(response=json.dumps(get_bugs(), sort_keys=False),
+                    status=200, mimetype="application/json")
+
+
+@app.route('/prs.json')
+def prs():
+    return Response(response=json.dumps(get_prs(), sort_keys=False),
+                    status=200, mimetype="application/json")
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5678)

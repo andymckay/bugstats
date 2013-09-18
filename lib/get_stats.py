@@ -4,14 +4,16 @@ from pprint import pprint
 
 import requests
 
+from .utils import encode
+
 try:
     import settings
 except ImportError:
     settings = False
 
-
-bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest/count'
-args = {
+bugzilla_web_url = 'https://bugzilla.mozilla.org/buglist.cgi'
+bugzilla_api_url = 'https://api-dev.bugzilla.mozilla.org/latest/count'
+search_args = {
     'email1': 'wraithan@mozilla.com',
     'email1_assigned_to': 1,
     'bug_status': ('RESOLVED', 'VERIFIED', 'CLOSED'),
@@ -19,18 +21,20 @@ args = {
     'resolution': 'FIXED',
 }
 
-
+args = search_args.copy()
 if settings:
     args.update(settings.additional_filter)
 elif os.getenv('BUGZILLA_FILTER', False):
     args.update(dict(pair.split('=')
                 for pair in os.getenv('BUGZILLA_FILTER').split(';')))
 
+search_args['columnlist'] = ('assigned_to,priority,status_whiteboard,version,'
+                             'target_milestone,cf_last_resolved,short_desc')
 
 def get_stats():
     source = 'api'
     try:
-        res = requests.get(url=bugzilla_url, params=args, timeout=1,
+        res = requests.get(url=bugzilla_api_url, params=args, timeout=1,
                            verify=True).json()
     except requests.Timeout:
         return {'error': 'Bugzilla timed out'}
@@ -69,7 +73,11 @@ def get_stats():
                      'avg': sum(to_avg)/float(len(to_avg)),
                      'ideal': ideal})
 
-    return {'stats': data, 'source': source}
+    return {
+        'stats': data,
+        'source': source,
+        'url': bugzilla_web_url + '?' + encode(search_args)
+    }
 
 
 if __name__ == '__main__':

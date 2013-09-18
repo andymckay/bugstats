@@ -3,6 +3,10 @@ $(function() {
     if (data.error) {
       $('#graph').append($('<h3>', {text: data.error}))
     } else {
+      $('#graph-header').append($('<small>').append($('<a>', {
+        text: '(link)'
+      , href: data.url
+      })))
       graph(data.stats)
     }
   })
